@@ -1,0 +1,10 @@
+/* CSS for elements with our custom class */
+.cfw-delivery-method-heading.hidden,
+#cfw-delivery-method.hidden {
+    display: none !important;
+}
+
+.cfw-delivery-method-heading:not(.hidden),
+#cfw-delivery-method.visible {
+    display: block !important;
+} 

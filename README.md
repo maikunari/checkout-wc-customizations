@@ -13,7 +13,7 @@ A WordPress plugin that extends CheckoutWC functionality with custom features.
 - WordPress 5.8+
 - WooCommerce 6.0+
 - CheckoutWC (latest version)
-- PHP 8.0+
+- PHP 7.4 - 8.2
 
 ## Installation
 
@@ -34,7 +34,7 @@ Navigate to WooCommerce → CheckoutWC Customizations in your WordPress admin pa
 This plugin is built to extend CheckoutWC functionality while maintaining compatibility with future updates. It uses:
 
 - WordPress coding standards
-- Modern PHP practices
+- Modern PHP practices (PHP 7.4+ compatible)
 - CheckoutWC hooks and filters
 - Vanilla JavaScript with jQuery
 

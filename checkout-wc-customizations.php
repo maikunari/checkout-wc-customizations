@@ -9,7 +9,7 @@
  * Text Domain: checkout-wc-customizations
  * Domain Path: /languages
  * Requires at least: 5.8
- * Requires PHP: 8.0
+ * Requires PHP: 7.4
  * WC requires at least: 6.0
  * WC tested up to: 8.0
  *
@@ -22,11 +22,37 @@ defined('ABSPATH') || exit;
 define('CKWC_CUSTOM_VERSION', '1.0.0');
 define('CKWC_CUSTOM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('CKWC_CUSTOM_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('CKWC_CUSTOM_MIN_PHP_VERSION', '7.4');
+
+/**
+ * Check if PHP version meets minimum requirements
+ *
+ * @return bool
+ */
+function ckwc_custom_check_php_version() {
+    if (version_compare(PHP_VERSION, CKWC_CUSTOM_MIN_PHP_VERSION, '<')) {
+        add_action('admin_notices', function() {
+            echo '<div class="error"><p>' . 
+                 sprintf(
+                     /* translators: %s: Minimum PHP version */
+                     __('CheckoutWC Customizations requires PHP version %s or higher.', 'checkout-wc-customizations'),
+                     CKWC_CUSTOM_MIN_PHP_VERSION
+                 ) . 
+                 '</p></div>';
+        });
+        return false;
+    }
+    return true;
+}
 
 /**
  * Check if WooCommerce and CheckoutWC are active
  */
 function ckwc_custom_check_dependencies() {
+    if (!ckwc_custom_check_php_version()) {
+        return false;
+    }
+
     if (is_admin() && current_user_can('activate_plugins')) {
         if (!class_exists('WooCommerce')) {
             add_action('admin_notices', function() {
@@ -91,6 +117,19 @@ add_action('plugins_loaded', 'ckwc_custom_init', 20);
  * Activation hook
  */
 function ckwc_custom_activate() {
+    if (!ckwc_custom_check_php_version()) {
+        deactivate_plugins(plugin_basename(__FILE__));
+        wp_die(
+            sprintf(
+                /* translators: %s: Minimum PHP version */
+                __('CheckoutWC Customizations requires PHP version %s or higher.', 'checkout-wc-customizations'),
+                CKWC_CUSTOM_MIN_PHP_VERSION
+            ),
+            'Plugin dependency check',
+            array('back_link' => true)
+        );
+    }
+
     if (!ckwc_custom_check_dependencies()) {
         deactivate_plugins(plugin_basename(__FILE__));
         wp_die(

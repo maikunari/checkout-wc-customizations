@@ -8,20 +8,20 @@
 defined('ABSPATH') || exit;
 
 /**
- * Class CKWC_Phone_Handler
+ * Class CKWC_Custom_Phone_Handler
  */
-class CKWC_Phone_Handler {
+class CKWC_Custom_Phone_Handler {
     /**
      * Single instance of the class
      *
-     * @var CKWC_Phone_Handler|null
+     * @var CKWC_Custom_Phone_Handler|null
      */
     protected static $instance = null;
 
     /**
      * Returns single instance of the class
      *
-     * @return CKWC_Phone_Handler
+     * @return CKWC_Custom_Phone_Handler
      */
     public static function get_instance() {
         if (is_null(self::$instance)) {
@@ -46,7 +46,7 @@ class CKWC_Phone_Handler {
     }
 
     /**
-     * Enqueue necessary scripts
+     * Enqueue scripts and styles
      */
     public function enqueue_scripts() {
         if (!is_checkout()) {
@@ -54,7 +54,7 @@ class CKWC_Phone_Handler {
         }
 
         wp_enqueue_script(
-            'ckwc-phone-sync',
+            'ckwc-custom-phone-sync',
             CKWC_CUSTOM_PLUGIN_URL . 'assets/js/phone-sync.js',
             array('jquery'),
             CKWC_CUSTOM_VERSION,
@@ -64,4 +64,4 @@ class CKWC_Phone_Handler {
 }
 
 // Initialize the class
-CKWC_Phone_Handler::get_instance(); 
+CKWC_Custom_Phone_Handler::get_instance(); 

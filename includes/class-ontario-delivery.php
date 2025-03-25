@@ -8,20 +8,20 @@
 defined('ABSPATH') || exit;
 
 /**
- * Class CKWC_Ontario_Delivery
+ * Class CKWC_Custom_Ontario_Delivery
  */
-class CKWC_Ontario_Delivery {
+class CKWC_Custom_Ontario_Delivery {
     /**
      * Single instance of the class
      *
-     * @var CKWC_Ontario_Delivery|null
+     * @var CKWC_Custom_Ontario_Delivery|null
      */
     protected static $instance = null;
 
     /**
      * Returns single instance of the class
      *
-     * @return CKWC_Ontario_Delivery
+     * @return CKWC_Custom_Ontario_Delivery
      */
     public static function get_instance() {
         if (is_null(self::$instance)) {
@@ -44,8 +44,8 @@ class CKWC_Ontario_Delivery {
         // Add scripts and styles to footer
         add_action('wp_print_footer_scripts', array($this, 'inject_geo_scripts'));
         
-        // Enqueue styles
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
+        // Enqueue scripts and styles
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
     }
 
     /**
@@ -81,15 +81,23 @@ class CKWC_Ontario_Delivery {
     }
 
     /**
-     * Enqueue necessary styles
+     * Enqueue scripts and styles
      */
-    public function enqueue_styles() {
+    public function enqueue_scripts() {
         if (!is_checkout()) {
             return;
         }
 
+        wp_enqueue_script(
+            'ckwc-custom-ontario-delivery',
+            CKWC_CUSTOM_PLUGIN_URL . 'assets/js/ontario-delivery.js',
+            array('jquery'),
+            CKWC_CUSTOM_VERSION,
+            true
+        );
+
         wp_enqueue_style(
-            'ckwc-ontario-delivery',
+            'ckwc-custom-ontario-delivery',
             CKWC_CUSTOM_PLUGIN_URL . 'assets/css/ontario-delivery.css',
             array(),
             CKWC_CUSTOM_VERSION
@@ -98,4 +106,4 @@ class CKWC_Ontario_Delivery {
 }
 
 // Initialize the class
-CKWC_Ontario_Delivery::get_instance(); 
+CKWC_Custom_Ontario_Delivery::get_instance(); 

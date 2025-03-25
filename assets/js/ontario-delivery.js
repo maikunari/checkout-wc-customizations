@@ -1,28 +1,34 @@
-jQuery(document).ready(function($) {
-    // Add a class to the <h3> that immediately precedes #cfw-delivery-method
-    $('#cfw-delivery-method').prev('h3').addClass('cfw-delivery-method-heading');
+jQuery(function($) {
+    'use strict';
 
-    // Function to update visibility based on location
-    function updateDeliveryVisibility() {
-        if (typeof ckwcOntarioDelivery !== 'undefined' && ckwcOntarioDelivery.isOntario === 'true') {
-            $('#cfw-delivery-method').removeClass('hidden').addClass('visible');
-            $('.cfw-delivery-method-heading').removeClass('hidden');
+    // Function to check if shipping is to Ontario
+    function isOntarioShipping() {
+        const shippingState = $('#shipping_state').val();
+        return shippingState === 'ON';
+    }
+
+    // Function to toggle delivery options visibility
+    function toggleDeliveryOptions() {
+        const isOntario = isOntarioShipping();
+        const deliveryMethod = $('#cfw-delivery-method');
+        const deliveryHeading = $('.cfw-delivery-method-heading');
+
+        if (isOntario) {
+            deliveryMethod.removeClass('hidden');
+            deliveryHeading.removeClass('hidden');
         } else {
-            $('#cfw-delivery-method').removeClass('visible').addClass('hidden');
-            $('.cfw-delivery-method-heading').addClass('hidden');
+            deliveryMethod.addClass('hidden');
+            deliveryHeading.addClass('hidden');
         }
     }
 
-    // Run initially
-    updateDeliveryVisibility();
+    // Initialize on page load
+    toggleDeliveryOptions();
 
-    // Observe DOM changes in case CheckoutWC reloads the checkout
-    const observer = new MutationObserver(function() {
-        updateDeliveryVisibility();
-    });
-    
-    observer.observe(document.body, { 
-        childList: true, 
-        subtree: true 
-    });
+    // Watch for changes to the shipping state
+    $(document).on('change', '#shipping_state', toggleDeliveryOptions);
+
+    // Re-check when CheckoutWC updates the form
+    $(document).on('cfw-after-tab-change', toggleDeliveryOptions);
+    $(document).on('cfw-after-customer-info-update', toggleDeliveryOptions);
 }); 

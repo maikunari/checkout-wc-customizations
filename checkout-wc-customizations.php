@@ -37,7 +37,7 @@ function ckwc_custom_check_dependencies() {
             return false;
         }
 
-        if (!class_exists('CFW')) {
+        if (!defined('CFW_VERSION')) {
             add_action('admin_notices', function() {
                 echo '<div class="error"><p>' . 
                      __('CheckoutWC Customizations requires CheckoutWC to be installed and active.', 'checkout-wc-customizations') . 
@@ -65,8 +65,25 @@ function ckwc_custom_init() {
     );
 
     // Include required files
+    require_once CKWC_CUSTOM_PLUGIN_DIR . 'includes/class-settings-handler.php';
     require_once CKWC_CUSTOM_PLUGIN_DIR . 'includes/class-phone-handler.php';
     require_once CKWC_CUSTOM_PLUGIN_DIR . 'includes/class-ontario-delivery.php';
+    require_once CKWC_CUSTOM_PLUGIN_DIR . 'includes/class-floating-cart-handler.php';
+
+    // Initialize classes
+    new CKWC_Custom_Settings();
+    
+    // Only initialize features if they're enabled in settings
+    if (get_option('ckwc_custom_phone_sync_enabled', 1)) {
+        new CKWC_Custom_Phone_Handler();
+    }
+    
+    if (get_option('ckwc_custom_ontario_delivery_enabled', 1)) {
+        new CKWC_Custom_Ontario_Delivery();
+    }
+    
+    // Always initialize floating cart handler as it's controlled by CSS
+    new CKWC_Custom_Floating_Cart();
 }
 add_action('plugins_loaded', 'ckwc_custom_init', 20);
 
@@ -81,6 +98,17 @@ function ckwc_custom_activate() {
             'Plugin dependency check',
             array('back_link' => true)
         );
+    }
+    
+    // Set default options if they don't exist
+    if (false === get_option('ckwc_custom_cart_top_position')) {
+        add_option('ckwc_custom_cart_top_position', 20);
+    }
+    if (false === get_option('ckwc_custom_ontario_delivery_enabled')) {
+        add_option('ckwc_custom_ontario_delivery_enabled', 1);
+    }
+    if (false === get_option('ckwc_custom_phone_sync_enabled')) {
+        add_option('ckwc_custom_phone_sync_enabled', 1);
     }
 }
 register_activation_hook(__FILE__, 'ckwc_custom_activate'); 

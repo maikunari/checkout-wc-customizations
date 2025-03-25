@@ -1,0 +1,10 @@
+/* Floating Cart Button Styles */
+.cfw-side-cart-floating-button {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Ensure the transition works smoothly when hiding/showing the button */
+.cfw-side-cart-floating-button.hidden {
+    opacity: 0;
+    visibility: hidden;
+} 

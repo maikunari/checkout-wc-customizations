@@ -7,6 +7,7 @@ A WordPress plugin that extends CheckoutWC functionality with custom features.
 - **Floating Cart Position**: Customize the position of the floating cart button from the top of the screen
 - **Phone Number Sync**: Automatically synchronize phone numbers between shipping and billing forms
 - **Ontario Delivery Options**: Show/hide delivery options based on whether the shipping address is in Ontario
+- **Tidio Chat Integration**: Smoothly animates the Tidio chat widget when the floating cart opens/closes to prevent overlap
 
 ## Requirements
 

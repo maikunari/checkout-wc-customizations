@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: CheckoutWC Customizations
+ * Plugin Name: CheckoutWC Customizations-99
  * Plugin URI: https://sonicpixel.ca
  * Description: Custom modifications for CheckoutWC including phone number sync and Ontario delivery options
  * Version: 1.0.0
@@ -95,6 +95,8 @@ function ckwc_custom_init() {
     require_once CKWC_CUSTOM_PLUGIN_DIR . 'includes/class-phone-handler.php';
     require_once CKWC_CUSTOM_PLUGIN_DIR . 'includes/class-ontario-delivery.php';
     require_once CKWC_CUSTOM_PLUGIN_DIR . 'includes/class-floating-cart-handler.php';
+    require_once CKWC_CUSTOM_PLUGIN_DIR . 'includes/class-chat-position-handler.php';
+    require_once CKWC_CUSTOM_PLUGIN_DIR . 'includes/class-recommendations-handler.php';
 
     // Initialize classes
     new CKWC_Custom_Settings();
@@ -110,6 +112,12 @@ function ckwc_custom_init() {
     
     // Always initialize floating cart handler as it's controlled by CSS
     new CKWC_Custom_Floating_Cart();
+
+    // Initialize chat position handler
+    new CKWC_Custom_Chat_Position();
+
+    // Initialize our recommendations tweaks
+    new CKWC_Custom_Recommendations();
 }
 add_action('plugins_loaded', 'ckwc_custom_init', 20);
 

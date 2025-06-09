@@ -49,7 +49,8 @@ class CKWC_Custom_Phone_Handler {
      * Enqueue scripts and styles
      */
     public function enqueue_scripts() {
-        if (!is_checkout()) {
+        // Check if WooCommerce is active and function exists
+        if (!function_exists('is_checkout') || !is_checkout()) {
             return;
         }
 
@@ -63,5 +64,7 @@ class CKWC_Custom_Phone_Handler {
     }
 }
 
-// Initialize the class
-CKWC_Custom_Phone_Handler::get_instance(); 
+// Initialize the class after WordPress is loaded
+add_action('init', function() {
+    CKWC_Custom_Phone_Handler::get_instance();
+}); 

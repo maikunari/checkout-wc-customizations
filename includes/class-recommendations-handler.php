@@ -11,6 +11,11 @@ defined('ABSPATH') || exit;
 class CKWC_Custom_Recommendations {
 
     public function __construct() {
+        // Check if WooCommerce is available before setting up hooks
+        if (!function_exists('WC') || !class_exists('WooCommerce')) {
+            return;
+        }
+        
         // ONLY add hooks if it's NOT an AJAX request
         if ( ! wp_doing_ajax() ) {
             // error_log('CKWC Custom Recs (Scroll Snap): Adding hooks (NOT AJAX)');
@@ -40,6 +45,11 @@ class CKWC_Custom_Recommendations {
      */
     public function increase_suggested_products( $original_products = [], $limit = 3, $random_fallback = false ): array {
         // error_log('CKWC Custom Recs (Scroll Snap): increase_suggested_products running internally.');
+        
+        // Check if WooCommerce functions are available
+        if (!function_exists('WC') || !WC() || !WC()->cart) {
+            return [];
+        }
 
         $desired = 6; // We always want 6 for our custom display
 
@@ -62,6 +72,11 @@ class CKWC_Custom_Recommendations {
         }
 
         if ( count( $new_products ) < $desired && $random_fallback ) {
+            // Check if wc_get_products function exists before using it
+            if (!function_exists('wc_get_products')) {
+                return $new_products;
+            }
+            
             $exclude_ids = array_unique( array_merge( $cart_item_ids, $found_ids ) );
             $random_args = [
                 'limit'        => $desired - count( $new_products ),
@@ -100,6 +115,12 @@ class CKWC_Custom_Recommendations {
      */
     public function output_custom_slider_html() {
         // error_log('CKWC Custom Recs (Scroll Snap): output_custom_slider_html action running.');
+        
+        // Ensure WooCommerce is available before proceeding
+        if (!function_exists('WC') || !WC() || !function_exists('wc_get_product')) {
+            return;
+        }
+        
         $products = $this->increase_suggested_products( [], 6, true );
         // error_log('CKWC Custom Recs (Scroll Snap): Found ' . count($products) . ' products.');
         if ( empty( $products ) ) return;

@@ -62,9 +62,4 @@ class CKWC_Custom_Phone_Handler {
             true
         );
     }
-}
-
-// Initialize the class after WordPress is loaded
-add_action('init', function() {
-    CKWC_Custom_Phone_Handler::get_instance();
-}); 
+} 

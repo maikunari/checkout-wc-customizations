@@ -83,6 +83,13 @@ function ckwc_custom_init() {
         return;
     }
 
+    // Ensure WooCommerce core functions are available
+    if (!function_exists('WC') || !function_exists('is_checkout')) {
+        // If WooCommerce functions aren't available yet, try again later
+        add_action('woocommerce_init', 'ckwc_custom_init_delayed', 10);
+        return;
+    }
+
     // Load plugin textdomain
     load_plugin_textdomain(
         'checkout-wc-customizations',
@@ -106,9 +113,8 @@ function ckwc_custom_init() {
         new CKWC_Custom_Phone_Handler();
     }
     
-    if (get_option('ckwc_custom_ontario_delivery_enabled', 1)) {
-        new CKWC_Custom_Ontario_Delivery();
-    }
+    // Note: Ontario delivery class initializes itself via hooks if enabled in settings
+    // The class checks the 'ckwc_custom_ontario_delivery_enabled' option internally
     
     // Always initialize floating cart handler as it's controlled by CSS
     new CKWC_Custom_Floating_Cart();
@@ -119,7 +125,19 @@ function ckwc_custom_init() {
     // Initialize our recommendations tweaks
     new CKWC_Custom_Recommendations();
 }
-add_action('plugins_loaded', 'ckwc_custom_init', 20);
+
+/**
+ * Delayed initialization for when WooCommerce functions become available
+ */
+function ckwc_custom_init_delayed() {
+    // Remove the hook to prevent multiple calls
+    remove_action('woocommerce_init', 'ckwc_custom_init_delayed', 10);
+    
+    // Try initialization again
+    ckwc_custom_init();
+}
+
+add_action('plugins_loaded', 'ckwc_custom_init', 25); // Increased priority to load after WooCommerce
 
 /**
  * Activation hook

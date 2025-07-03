@@ -52,7 +52,13 @@ class CKWC_Custom_Ontario_Delivery {
      * Inject geolocation scripts
      */
     public function inject_geo_scripts() {
-        if (!is_checkout()) {
+        // Check if WooCommerce functions are available and we're on checkout
+        if (!function_exists('is_checkout') || !is_checkout()) {
+            return;
+        }
+
+        // Check if WPEngine GeoIP class exists
+        if (!class_exists('\WPEngine\GeoIp')) {
             return;
         }
 
@@ -84,7 +90,8 @@ class CKWC_Custom_Ontario_Delivery {
      * Enqueue scripts and styles
      */
     public function enqueue_scripts() {
-        if (!is_checkout()) {
+        // Check if WooCommerce functions are available and we're on checkout
+        if (!function_exists('is_checkout') || !is_checkout()) {
             return;
         }
 
@@ -105,5 +112,10 @@ class CKWC_Custom_Ontario_Delivery {
     }
 }
 
-// Initialize the class
-CKWC_Custom_Ontario_Delivery::get_instance(); 
+// Initialize the class after WordPress and WooCommerce are loaded
+add_action('init', function() {
+    // Only initialize if WooCommerce functions are available and feature is enabled
+    if (function_exists('is_checkout') && get_option('ckwc_custom_ontario_delivery_enabled', 1)) {
+        CKWC_Custom_Ontario_Delivery::get_instance();
+    }
+}, 20); // Priority 20 to ensure WooCommerce is loaded 
